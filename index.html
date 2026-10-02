@@ -101,10 +101,22 @@
       animation: rise 0.9s ease forwards 0.1s;
     }
 
-    .brand img {
-      width: 54px;
+    .brand-mark {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--white);
+      border: 1px solid rgba(255,255,255,0.35);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .brand-mark img {
+      width: 28px;
       height: auto;
-      filter: brightness(0) invert(1);
+      display: block;
+      filter: none;
     }
 
     .brand span {
@@ -375,6 +387,39 @@
       background: #0b1f3a;
     }
 
+    .video-hint {
+      display: none;
+      margin-top: 0.85rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+
+    .video-dots {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .video-dots button {
+      width: 0.55rem;
+      height: 0.55rem;
+      border: 0;
+      border-radius: 999px;
+      padding: 0;
+      background: #b7c5d0;
+      cursor: pointer;
+      transition: width 0.2s ease, background 0.2s ease;
+    }
+
+    .video-dots button[aria-current="true"] {
+      width: 1.15rem;
+      background: var(--teal);
+    }
+
     .partners {
       background:
         linear-gradient(135deg, rgba(0,128,151,0.08), rgba(0,45,98,0.05)),
@@ -513,16 +558,25 @@
       .hero h1 { max-width: 12ch; }
 
       .video-grid {
-        grid-template-columns: 1fr;
+        display: flex;
         gap: 0.85rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.2rem;
+        scrollbar-width: none;
       }
 
+      .video-grid::-webkit-scrollbar { display: none; }
+
       .video-grid video {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 16 / 10;
-        object-fit: cover;
+        flex: 0 0 min(82vw, 320px);
+        width: min(82vw, 320px);
+        height: 200px;
+        scroll-snap-align: start;
       }
+
+      .video-hint { display: flex; }
     }
 
     @media (max-width: 640px) {
@@ -559,7 +613,13 @@
         margin-bottom: 1.6rem;
       }
 
-      .brand img { width: 42px; }
+      .brand-mark {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+      }
+
+      .brand-mark img { width: 24px; }
 
       .brand span {
         font-size: clamp(1.65rem, 8vw, 2.1rem);
@@ -690,7 +750,9 @@
     </div>
     <div class="hero-content">
       <div class="brand">
-        <img src="medfair-profile-assets/medfair-logo.png" alt="" />
+        <div class="brand-mark">
+          <img src="medfair-profile-assets/medfair.svg" alt="MedFair" />
+        </div>
         <div>
           <span>MedFair</span>
           <small>Care Anywhere</small>
@@ -816,7 +878,7 @@
 
       <div class="videos reveal">
         <h3>Field videos</h3>
-        <div class="video-grid">
+        <div class="video-grid" id="videoGrid">
           <video controls playsinline preload="metadata" poster="medfair-profile-assets/patient-seated.jpg">
             <source src="medfair-profile-assets/field-01.mp4" type="video/mp4" />
           </video>
@@ -826,6 +888,14 @@
           <video controls playsinline preload="metadata" poster="medfair-profile-assets/patient-remote.jpg">
             <source src="medfair-profile-assets/field-03.mp4" type="video/mp4" />
           </video>
+        </div>
+        <div class="video-hint" aria-hidden="false">
+          <span>Swipe for more</span>
+          <div class="video-dots" id="videoDots" role="tablist" aria-label="Field video pages">
+            <button type="button" aria-label="Video 1" aria-current="true"></button>
+            <button type="button" aria-label="Video 2"></button>
+            <button type="button" aria-label="Video 3"></button>
+          </div>
         </div>
       </div>
     </div>
@@ -867,7 +937,7 @@
       </p>
       <div class="cta-row" style="margin-bottom: 2rem;">
         <a class="btn btn-primary" href="mailto:hello@medfairtechnologies.com">Email MedFair</a>
-        <a class="btn btn-ghost" href="tel:+2348033741046">Call +234 803 374 1046</a>
+        <a class="btn btn-ghost" href="tel:+2348080414379">Call +234 808 041 4379</a>
       </div>
       <div class="contact-links">
         <a href="mailto:hello@medfairtechnologies.com">hello@medfairtechnologies.com</a>
@@ -894,6 +964,43 @@
     }, { threshold: 0.16 });
 
     document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+
+    const videoGrid = document.getElementById("videoGrid");
+    const videoDots = document.getElementById("videoDots");
+    if (videoGrid && videoDots) {
+      const videos = [...videoGrid.querySelectorAll("video")];
+      const dots = [...videoDots.querySelectorAll("button")];
+
+      const setActive = (index) => {
+        dots.forEach((dot, i) => {
+          if (i === index) dot.setAttribute("aria-current", "true");
+          else dot.removeAttribute("aria-current");
+        });
+      };
+
+      const nearestIndex = () => {
+        const left = videoGrid.scrollLeft;
+        let best = 0;
+        let bestDist = Infinity;
+        videos.forEach((video, i) => {
+          const dist = Math.abs(video.offsetLeft - left);
+          if (dist < bestDist) {
+            bestDist = dist;
+            best = i;
+          }
+        });
+        return best;
+      };
+
+      videoGrid.addEventListener("scroll", () => setActive(nearestIndex()), { passive: true });
+
+      dots.forEach((dot, i) => {
+        dot.addEventListener("click", () => {
+          videos[i].scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+          setActive(i);
+        });
+      });
+    }
   </script>
 </body>
 </html>
