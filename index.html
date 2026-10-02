@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MedFair — Care Anywhere</title>
+  <meta name="description" content="MedFair connects people to licensed doctors by video, then completes care through trusted hospitals, labs, and pharmacies." />
+  <link rel="icon" type="image/svg+xml" href="medfair-profile-assets/medfair.svg" />
+  <link rel="apple-touch-icon" href="medfair-profile-assets/medfair.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #002D62;
+      --teal: #008097;
+      --teal-deep: #006a7d;
+      --ink: #142033;
+      --muted: #5a6678;
+      --line: #d9e2ea;
+      --paper: #f3f7f8;
+      --white: #ffffff;
+      --gold: #c4a35a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--white);
+      line-height: 1.55;
+    }
+
+    img, video { display: block; max-width: 100%; height: auto; }
+
+    a { color: inherit; text-decoration: none; }
+
+    .wrap {
+      width: min(1120px, calc(100% - 2.5rem));
+      margin-inline: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      .hero-media img { transform: none !important; }
+    }
+
+    /* HERO — one composition, full-bleed */
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      color: var(--white);
+      overflow: hidden;
+      display: grid;
+      align-items: end;
+    }
+
+    .hero-media {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 55% center;
+      transform: scale(1.04);
+      animation: heroDrift 18s ease-in-out infinite alternate;
+    }
+
+    .hero-shade {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(0,45,98,0.18) 0%, rgba(0,45,98,0.35) 42%, rgba(0,20,40,0.88) 100%),
+        linear-gradient(90deg, rgba(0,45,98,0.55) 0%, rgba(0,45,98,0.05) 70%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      padding: 2rem 0 3.5rem;
+      width: min(1120px, calc(100% - 2.5rem));
+      margin-inline: auto;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 2.8rem;
+      opacity: 0;
+      animation: rise 0.9s ease forwards 0.1s;
+    }
+
+    .brand img {
+      width: 54px;
+      height: auto;
+      filter: brightness(0) invert(1);
+    }
+
+    .brand span {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 0.25rem;
+      font-family: "Manrope", sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.8;
+      font-weight: 600;
+    }
+
+    .hero h1 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(2.6rem, 7vw, 4.8rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      max-width: 11ch;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: rise 0.9s ease forwards 0.25s;
+    }
+
+    .hero p {
+      max-width: 34rem;
+      font-size: clamp(1.05rem, 2vw, 1.2rem);
+      color: rgba(255,255,255,0.88);
+      margin-bottom: 1.6rem;
+      opacity: 0;
+      animation: rise 0.9s ease forwards 0.4s;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      opacity: 0;
+      animation: rise 0.9s ease forwards 0.55s;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3rem;
+      padding: 0.85rem 1.35rem;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: 1px solid transparent;
+      transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: var(--teal);
+      color: var(--white);
+    }
+
+    .btn-primary:hover { background: var(--teal-deep); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--white);
+      border-color: rgba(255,255,255,0.45);
+    }
+
+    .btn-ghost:hover { border-color: #fff; }
+
+    /* SECTIONS */
+    section {
+      padding: 5.5rem 0;
+    }
+
+    .section-kicker {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 0.9rem;
+    }
+
+    h2 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--navy);
+      max-width: 16ch;
+      margin-bottom: 1rem;
+    }
+
+    .lead {
+      font-size: 1.12rem;
+      color: var(--muted);
+      max-width: 40rem;
+    }
+
+    .mission {
+      background:
+        radial-gradient(circle at 90% 10%, rgba(0,128,151,0.12), transparent 28%),
+        linear-gradient(180deg, #eef6f8 0%, #ffffff 100%);
+    }
+
+    .mission-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 2.5rem;
+      align-items: end;
+      margin-top: 2.5rem;
+    }
+
+    .mission-copy h2 { max-width: 14ch; }
+
+    .mission-note {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--line);
+      color: var(--ink);
+      font-size: 1.05rem;
+      max-width: 34rem;
+    }
+
+    .mission-photo {
+      min-height: 420px;
+      border-radius: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .mission-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      min-height: 420px;
+    }
+
+    .model {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .model h2 { color: var(--white); }
+
+    .model .lead { color: rgba(255,255,255,0.78); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 2.8rem;
+    }
+
+    .step {
+      padding-top: 1.2rem;
+      border-top: 2px solid rgba(255,255,255,0.18);
+    }
+
+    .step strong {
+      display: block;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.45rem;
+      margin: 0.7rem 0 0.55rem;
+    }
+
+    .step span {
+      display: block;
+      color: var(--gold);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .step p { color: rgba(255,255,255,0.76); }
+
+    .values {
+      background: var(--paper);
+    }
+
+    .values-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      margin-top: 2.5rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .value-item {
+      padding: 1.8rem 1.4rem 1.8rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .value-item:nth-child(odd) { padding-right: 2rem; border-right: 1px solid var(--line); }
+    .value-item:nth-child(even) { padding-left: 2rem; }
+
+    .value-item h3 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.45rem;
+      color: var(--navy);
+      margin-bottom: 0.55rem;
+    }
+
+    .value-item p { color: var(--muted); max-width: 28rem; }
+
+    .field h2 { max-width: 18ch; }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      grid-template-rows: 240px 240px;
+      gap: 0.85rem;
+      margin-top: 2.4rem;
+    }
+
+    .gallery figure {
+      overflow: hidden;
+      background: #d7e2e8;
+      position: relative;
+    }
+
+    .gallery figure:first-child {
+      grid-row: 1 / span 2;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s ease;
+    }
+
+    .gallery figure:hover img { transform: scale(1.04); }
+
+    .videos {
+      margin-top: 2.8rem;
+    }
+
+    .videos h3 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.5rem;
+      color: var(--navy);
+      margin-bottom: 1rem;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+    }
+
+    .video-grid video {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      background: #0b1f3a;
+    }
+
+    .partners {
+      background:
+        linear-gradient(135deg, rgba(0,128,151,0.08), rgba(0,45,98,0.05)),
+        var(--white);
+    }
+
+    .partner-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-top: 2.4rem;
+    }
+
+    .partner {
+      padding: 1.6rem 0 0;
+      border-top: 2px solid var(--teal);
+    }
+
+    .partner h3 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: 1.5rem;
+      color: var(--navy);
+      margin-bottom: 0.35rem;
+    }
+
+    .partner small {
+      display: block;
+      color: var(--teal);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .partner p { color: var(--muted); }
+
+    .contact {
+      background: var(--navy);
+      color: var(--white);
+      padding: 5rem 0;
+    }
+
+    .contact h2 { color: var(--white); max-width: 14ch; }
+
+    .contact .lead { color: rgba(255,255,255,0.78); margin-bottom: 1.8rem; }
+
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem 2.5rem;
+      font-size: 1.05rem;
+    }
+
+    .contact-links a { border-bottom: 1px solid rgba(255,255,255,0.35); padding-bottom: 0.15rem; }
+    .contact-links a:hover { border-color: var(--gold); color: var(--gold); }
+
+    footer {
+      background: #001a3a;
+      color: rgba(255,255,255,0.65);
+      padding: 1.4rem 0;
+      font-size: 0.88rem;
+    }
+
+    footer .wrap {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @keyframes heroDrift {
+      from { transform: scale(1.04) translate3d(0, 0, 0); }
+      to { transform: scale(1.08) translate3d(-1.5%, -1%, 0); }
+    }
+
+    @media (max-width: 900px) {
+      .wrap,
+      .hero-content {
+        width: min(1120px, calc(100% - 1.75rem));
+      }
+
+      section { padding: 4rem 0; }
+
+      .mission-grid,
+      .steps,
+      .values-list,
+      .partner-row {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .mission-photo,
+      .mission-photo img {
+        min-height: 300px;
+      }
+
+      .gallery {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 240px 180px 180px;
+      }
+
+      .gallery figure:first-child {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        min-height: 260px;
+      }
+
+      .value-item:nth-child(odd),
+      .value-item:nth-child(even) {
+        padding-left: 0;
+        padding-right: 0;
+        border-right: 0;
+      }
+
+      .value-item:last-child {
+        grid-column: auto;
+      }
+
+      .hero h1 { max-width: 12ch; }
+
+      .video-grid {
+        display: flex;
+        gap: 0.85rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 0.35rem;
+      }
+
+      .video-grid video {
+        flex: 0 0 min(78vw, 320px);
+        height: 200px;
+        scroll-snap-align: start;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .wrap,
+      .hero-content {
+        width: min(1120px, calc(100% - 1.35rem));
+      }
+
+      section { padding: 3.25rem 0; }
+
+      .hero {
+        min-height: 100svh;
+        min-height: 100dvh;
+      }
+
+      .hero-media img {
+        object-position: 62% center;
+        animation: none;
+        transform: scale(1.06);
+      }
+
+      .hero-shade {
+        background:
+          linear-gradient(180deg, rgba(0,45,98,0.25) 0%, rgba(0,20,40,0.55) 40%, rgba(0,12,28,0.92) 100%);
+      }
+
+      .hero-content {
+        padding: 1.25rem 0 2rem;
+        padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+      }
+
+      .brand {
+        gap: 0.65rem;
+        margin-bottom: 1.6rem;
+      }
+
+      .brand img { width: 42px; }
+
+      .brand span {
+        font-size: clamp(1.65rem, 8vw, 2.1rem);
+      }
+
+      .brand small {
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.15rem, 10vw, 2.8rem);
+        max-width: 11ch;
+        margin-bottom: 0.85rem;
+      }
+
+      .hero p {
+        font-size: 1rem;
+        max-width: 28rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .cta-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.65rem;
+      }
+
+      .btn {
+        width: 100%;
+        min-height: 3.15rem;
+        font-size: 0.95rem;
+      }
+
+      h2 {
+        font-size: clamp(1.75rem, 8vw, 2.35rem);
+        max-width: 14ch;
+      }
+
+      .lead {
+        font-size: 1rem;
+      }
+
+      .mission-grid { margin-top: 1.75rem; gap: 1.5rem; }
+
+      .mission-photo,
+      .mission-photo img {
+        min-height: 260px;
+      }
+
+      .mission-note {
+        margin-top: 1.15rem;
+        padding-top: 1.15rem;
+        font-size: 1rem;
+      }
+
+      .steps {
+        margin-top: 2rem;
+        gap: 1.1rem;
+      }
+
+      .step strong { font-size: 1.3rem; }
+
+      .values-list { margin-top: 1.75rem; }
+
+      .value-item {
+        padding: 1.25rem 0;
+      }
+
+      .value-item h3 { font-size: 1.25rem; }
+
+      .gallery {
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+        gap: 0.65rem;
+        margin-top: 1.75rem;
+      }
+
+      .gallery figure,
+      .gallery figure:first-child {
+        min-height: 210px;
+      }
+
+      .videos { margin-top: 2rem; }
+
+      .videos h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.85rem;
+      }
+
+      .video-grid video {
+        flex-basis: 85vw;
+        height: 190px;
+      }
+
+      .partner-row {
+        margin-top: 1.75rem;
+        gap: 1.5rem;
+      }
+
+      .contact { padding: 3.5rem 0; }
+
+      .contact-links {
+        flex-direction: column;
+        gap: 0.9rem;
+        font-size: 0.98rem;
+      }
+
+      footer {
+        padding: 1.15rem 0 calc(1.15rem + env(safe-area-inset-bottom, 0px));
+        font-size: 0.82rem;
+      }
+
+      footer .wrap {
+        flex-direction: column;
+        gap: 0.35rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .hero h1 { font-size: 2rem; }
+      .brand span { font-size: 1.5rem; }
+      .gallery figure,
+      .gallery figure:first-child { min-height: 190px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-media" aria-hidden="true">
+      <img src="medfair-profile-assets/consult-community.jpg" alt="" />
+      <div class="hero-shade"></div>
+    </div>
+    <div class="hero-content">
+      <div class="brand">
+        <img src="medfair-profile-assets/medfair-logo.png" alt="" />
+        <div>
+          <span>MedFair</span>
+          <small>Care Anywhere</small>
+        </div>
+      </div>
+      <h1>Care that reaches people where they are.</h1>
+      <p>Licensed doctors by video. Partner hospitals when a screen is not enough.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#contact">Partner with us</a>
+        <a class="btn btn-ghost" href="#field">See our work</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="mission" id="mission">
+    <div class="wrap">
+      <div class="mission-grid">
+        <div class="mission-copy reveal">
+          <div class="section-kicker">Who we are</div>
+          <h2>Mission</h2>
+          <p class="lead">
+            Give people fast access to licensed doctors, then help them finish care through trusted facilities when a consult alone is not enough.
+          </p>
+          <p class="mission-note">
+            Too many people wait too long, travel too far, or pay too much for basic medical advice. MedFair exists to shorten that gap — for rural communities, organisation members, and anyone who needs a doctor sooner.
+          </p>
+        </div>
+        <div class="mission-photo reveal">
+          <img src="medfair-profile-assets/patient-remote.jpg" alt="A community member joining a MedFair telemedicine consultation" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="model" id="model">
+    <div class="wrap">
+      <div class="reveal">
+        <div class="section-kicker">How MedFair works</div>
+        <h2>Digital access. Physical completion.</h2>
+        <p class="lead">
+          We start care on a screen and finish it where it is needed — consult, diagnostics, medicines, and follow-up through one accountable pathway.
+        </p>
+      </div>
+      <div class="steps">
+        <div class="step reveal">
+          <span>01</span>
+          <strong>Consult</strong>
+          <p>Members book and join a licensed GP or specialist by video, with clinical notes kept on the platform.</p>
+        </div>
+        <div class="step reveal">
+          <span>02</span>
+          <strong>Refer</strong>
+          <p>When tests or medicines are needed, MedFair authorises a visit to a partner hospital or facility.</p>
+        </div>
+        <div class="step reveal">
+          <span>03</span>
+          <strong>Complete</strong>
+          <p>Review, laboratory work, imaging, and pharmacy fulfilment close the episode of care.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="values" id="values">
+    <div class="wrap">
+      <div class="reveal">
+        <div class="section-kicker">What guides us</div>
+        <h2>Core values</h2>
+        <p class="lead">Five commitments we hold when we build, partner, and deliver care.</p>
+      </div>
+      <div class="values-list">
+        <div class="value-item reveal">
+          <h3>Access first</h3>
+          <p>Care should reach people where they are, not only where hospitals are concentrated.</p>
+        </div>
+        <div class="value-item reveal">
+          <h3>Clinical responsibility</h3>
+          <p>Licensed doctors, proper notes, and no shortcuts on quality.</p>
+        </div>
+        <div class="value-item reveal">
+          <h3>Complete care</h3>
+          <p>A consult is not enough if the patient still needs tests or medicines. Finish the episode.</p>
+        </div>
+        <div class="value-item reveal">
+          <h3>Trust and clarity</h3>
+          <p>Clear pricing, clear authorisation, and clear records for patients and partners.</p>
+        </div>
+        <div class="value-item reveal" style="grid-column: 1 / -1; border-right: 0; padding-left: 0;">
+          <h3>Partnership</h3>
+          <p>Hospitals, HMOs, organisations, and clinicians are part of delivery — not afterthoughts.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="field" id="field">
+    <div class="wrap">
+      <div class="reveal">
+        <div class="section-kicker">In the field</div>
+        <h2>Real consultations. Real communities.</h2>
+        <p class="lead">
+          From community sessions to one-to-one video consults, this is MedFair at work — bringing licensed doctors closer to people who cannot easily reach a clinic.
+        </p>
+      </div>
+
+      <div class="gallery">
+        <figure class="reveal">
+          <img src="medfair-profile-assets/consult-community.jpg" alt="Facilitator supporting a community telemedicine consultation" />
+        </figure>
+        <figure class="reveal">
+          <img src="medfair-profile-assets/facilitator-call.jpg" alt="MedFair facilitator on a video call with a doctor" />
+        </figure>
+        <figure class="reveal">
+          <img src="medfair-profile-assets/patient-laptop.jpg" alt="Patient attending a remote consultation on a laptop" />
+        </figure>
+        <figure class="reveal">
+          <img src="medfair-profile-assets/clinician-side.jpg" alt="Team member coordinating a MedFair session" />
+        </figure>
+        <figure class="reveal">
+          <img src="medfair-profile-assets/session-desk.jpg" alt="Telemedicine setup with medical monitoring equipment" />
+        </figure>
+      </div>
+
+      <div class="videos reveal">
+        <h3>Field videos</h3>
+        <div class="video-grid">
+          <video controls playsinline preload="metadata" poster="medfair-profile-assets/patient-seated.jpg">
+            <source src="medfair-profile-assets/field-01.mp4" type="video/mp4" />
+          </video>
+          <video controls playsinline preload="metadata" poster="medfair-profile-assets/facilitator-call.jpg">
+            <source src="medfair-profile-assets/field-02.mp4" type="video/mp4" />
+          </video>
+          <video controls playsinline preload="metadata" poster="medfair-profile-assets/patient-remote.jpg">
+            <source src="medfair-profile-assets/field-03.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="partners" id="partners">
+    <div class="wrap">
+      <div class="reveal">
+        <div class="section-kicker">Who we work with</div>
+        <h2>Partners already in motion</h2>
+        <p class="lead">We deliver through organisations, consultation partners, and hospitals — not alone.</p>
+      </div>
+      <div class="partner-row">
+        <div class="partner reveal">
+          <h3>Awadoc</h3>
+          <small>Consultation partner</small>
+          <p>Patients reach MedFair doctors through Awadoc’s booking rail. We handle clinical delivery.</p>
+        </div>
+        <div class="partner reveal">
+          <h3>Nuga Hospitals</h3>
+          <small>Hospital partner</small>
+          <p>Signed collaboration for in-person review, diagnostics, and medication fulfilment in Abuja.</p>
+        </div>
+        <div class="partner reveal">
+          <h3>Peace Media</h3>
+          <small>Organisation client</small>
+          <p>Members access GP care on MedFair through an organisation-funded wallet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap reveal">
+      <div class="section-kicker" style="color: var(--gold);">Next step</div>
+      <h2>Let’s build better access together.</h2>
+      <p class="lead">
+        Whether you are an HMO, employer, church, hospital, or distribution partner — we are ready for a short briefing and a live walkthrough.
+      </p>
+      <div class="cta-row" style="margin-bottom: 2rem;">
+        <a class="btn btn-primary" href="mailto:hello@medfairtechnologies.com">Email MedFair</a>
+        <a class="btn btn-ghost" href="tel:+2348033741046">Call +234 803 374 1046</a>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:hello@medfairtechnologies.com">hello@medfairtechnologies.com</a>
+        <a href="https://www.medfairtechnologies.com" target="_blank" rel="noopener">www.medfairtechnologies.com</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <span>MedFair Technologies Limited</span>
+      <span>Care Anywhere</span>
+    </div>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.16 });
+
+    document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+  </script>
+</body>
+</html>
