@@ -513,18 +513,15 @@
       .hero h1 { max-width: 12ch; }
 
       .video-grid {
-        display: flex;
+        grid-template-columns: 1fr;
         gap: 0.85rem;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 0.35rem;
       }
 
       .video-grid video {
-        flex: 0 0 min(78vw, 320px);
-        height: 200px;
-        scroll-snap-align: start;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 10;
+        object-fit: cover;
       }
     }
 
@@ -651,11 +648,6 @@
       .videos h3 {
         font-size: 1.3rem;
         margin-bottom: 0.85rem;
-      }
-
-      .video-grid video {
-        flex-basis: 85vw;
-        height: 190px;
       }
 
       .partner-row {
